@@ -1,0 +1,37 @@
+{
+  "name": "ws-wrapper",
+  "version": "0.1.0",
+  "description": "a simple wrapper for WebSocket Web API",
+  "type": "module",
+  "source": "src/index.ts",
+  "main": "dist/index.cjs",
+  "umd:main": "dist/index.umd.js",
+  "module": "dist/index.module.js",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karsanda/ws-wrapper.git"
+  },
+  "keywords": [
+    "websocket"
+  ],
+  "author": "Pinto Karsanda",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/karsanda/ws-wrapper/issues"
+  },
+  "homepage": "https://github.com/karsanda/ws-wrapper#readme",
+  "devDependencies": {
+    "microbundle": "^0.14.2",
+    "typescript": "^4.6.2"
+  }
+}
