@@ -1,7 +1,7 @@
 {
-  "name": "ws-wrapper",
+  "name": "socketto",
   "version": "0.1.1",
-  "description": "a simple wrapper for WebSocket Web API",
+  "description": "Tiny wrapper for WebSocket Web API",
   "type": "module",
   "source": "src/index.ts",
   "main": "dist/index.cjs",
@@ -15,11 +15,14 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/karsanda/ws-wrapper.git"
+    "url": "git+https://github.com/karsanda/socketto.git"
   },
   "keywords": [
     "websocket"
@@ -27,9 +30,9 @@
   "author": "Pinto Karsanda",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/karsanda/ws-wrapper/issues"
+    "url": "https://github.com/karsanda/socketto/issues"
   },
-  "homepage": "https://github.com/karsanda/ws-wrapper#readme",
+  "homepage": "https://github.com/karsanda/socketto#readme",
   "devDependencies": {
     "microbundle": "^0.14.2",
     "typescript": "^4.6.2"
