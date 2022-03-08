@@ -1,2 +1,2 @@
-# ws-wrapper
-Wrapper for WebSocket Web API
+# Socketto
+Tiny wrapper for WebSocket Web API
