@@ -1,12 +1,5 @@
 import { Session } from './session'
 
-type WebSocketEvents = {
-  onOpen?: () => void
-  onClose?: () => void
-  onMessage?: (data: any) => void
-  onError?: (data: any) => void
-}
-
 let session = new Session()
 
 export function openConnection(url: string, events: WebSocketEvents) {

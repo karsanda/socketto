@@ -1,12 +1,5 @@
 import { WebSocketAdapter } from './adapter'
 
-type WebSocketEvents = {
-  onOpen?: () => void
-  onClose?: () => void
-  onMessage?: (data: any) => void
-  onError?: (data: any) => void
-}
-
 export class Session {
   static wsAdapter: WebSocketAdapter
 
