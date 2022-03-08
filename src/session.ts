@@ -13,11 +13,14 @@ export class Session {
   open(url: string, events: WebSocketEvents) {
     if (!Session.wsAdapter) {
       Session.wsAdapter = WebSocketAdapter.create(url, events)
+    } else {
+      console.warn('Connection to WebSocket is already opened.')
     }
   }
 
   close() {
     this.checkConnection(() => Session.wsAdapter.close())
+    Session.wsAdapter = null
   }
 
   sendMessage(data: any) {
@@ -29,6 +32,6 @@ export class Session {
   }
 
   private checkConnection(command: () => void) {
-    this.readyState() === 1 ? command() : console.log("The connection to WebSocket has not opened yet.")
+    this.readyState() === 1 ? command() : console.error("Connection to WebSocket has not opened yet.")
   }
 }

@@ -15,7 +15,6 @@ export function openConnection(url: string, events: WebSocketEvents) {
 
 export function closeConnection() {
   session.close()
-  session = null
 }
 
 export function sendMessage(data: any) {
