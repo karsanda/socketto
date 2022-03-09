@@ -3,7 +3,7 @@ import { WebSocketAdapter } from './adapter'
 export class Session {
   static wsAdapter: WebSocketAdapter
 
-  open(url: string, events: WebSocketEvents) {
+  constructor(url: string, events: WebSocketEvents) {
     if (!Session.wsAdapter) {
       Session.wsAdapter = WebSocketAdapter.create(url, events)
     } else {
