@@ -1,30 +1,32 @@
 import { WebSocketAdapter } from './adapter'
 
 export class Session {
-  static wsAdapter: WebSocketAdapter
+  static adapter: WebSocketAdapter
 
   constructor(url: string, events: WebSocketEvents) {
-    if (!Session.wsAdapter) {
-      Session.wsAdapter = WebSocketAdapter.create(url, events)
+    if (!Session.adapter) {
+      Session.adapter = WebSocketAdapter.create(url, events)
     } else {
       console.warn('Connection to WebSocket is already opened.')
     }
   }
 
   close() {
-    this.checkConnection(() => Session.wsAdapter.close())
-    Session.wsAdapter = null
+    checkConnection(Session.adapter, () => Session.adapter.close())
+    Session.adapter = null
   }
 
   sendMessage(data: any) {
-    this.checkConnection(() => Session.wsAdapter.send(data))
+    checkConnection(Session.adapter, () => Session.adapter.send(data))
   }
 
   readyState() {
-    return Session.wsAdapter ? Session.wsAdapter.readyState : -1
+    return Session.adapter ? Session.adapter.readyState : -1
   }
+}
 
-  private checkConnection(command: () => void) {
-    this.readyState() === 1 ? command() : console.error("Connection to WebSocket has not opened yet.")
-  }
+function checkConnection(adapter: WebSocketAdapter, command: () => void) {
+  adapter.readyState === 1
+    ? command()
+    : console.error("Connection to WebSocket has not opened yet.")
 }
