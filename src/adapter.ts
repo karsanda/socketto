@@ -1,8 +1,8 @@
 export class WebSocketAdapter {
-  private socket: WebSocket 
+  private _socket: WebSocket
 
   constructor(url: string) {
-    this.socket = new WebSocket(url)
+    this._socket = new WebSocket(url)
   }
 
   static create(url: string, events: WebSocketEvents) {
@@ -30,6 +30,14 @@ export class WebSocketAdapter {
 
   set onerror(event: WebSocketEvents['onError']) {
     this.socket.onerror = event
+  }
+
+  get socket() {
+    return process.env.NODE_ENV === 'test' ? this._socket : undefined
+  }
+
+  get url() {
+    return this.socket.url
   }
 
   get readyState() {

@@ -15,7 +15,7 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "echo \"Error: no test specified\""
+    "test": "jest"
   },
   "files": [
     "dist"
