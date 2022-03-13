@@ -24,19 +24,19 @@ describe('WebSocketAdapter', () => {
     })
 
     test('it should assign onopen option', () => {
-      expect(adapter.socket.onopen).toEqual(onOpen)
+      expect(adapter.testonly_socket.onopen).toEqual(onOpen)
     })
 
     test('it should assign onclose option', () => {
-      expect(adapter.socket.onclose).toEqual(onClose)
+      expect(adapter.testonly_socket.onclose).toEqual(onClose)
     })
 
     test('it should assign onmessage option', () => {
-      expect(adapter.socket.onmessage).toEqual(onMessage)
+      expect(adapter.testonly_socket.onmessage).toEqual(onMessage)
     })
 
     test('it should assign onerror option', () => {
-      expect(adapter.socket.onerror).toEqual(onError)
+      expect(adapter.testonly_socket.onerror).toEqual(onError)
     })
   })
 
@@ -53,10 +53,10 @@ describe('WebSocketAdapter', () => {
   describe('#send', () => {
     test('it should be able to send message', () => {
       const adapter = WebSocketAdapter.create(url, { onOpen, onClose, onMessage, onError })
-      jest.spyOn(adapter.socket, 'send').mockImplementation(() => {})
+      jest.spyOn(adapter.testonly_socket, 'send').mockImplementation(() => {})
 
       adapter.send('stub-message')
-      expect(adapter.socket.send).toHaveBeenCalledWith('stub-message')
+      expect(adapter.testonly_socket.send).toHaveBeenCalledWith('stub-message')
     })
   })
 
@@ -66,7 +66,7 @@ describe('WebSocketAdapter', () => {
 
       const adapter = WebSocketAdapter.create(url, { onOpen, onClose, onMessage, onError })
       process.env.NODE_ENV = 'development'
-      expect(adapter.socket).toBe(undefined)
+      expect(adapter.testonly_socket).toBe(undefined)
 
       process.env = OLD_ENV
     })

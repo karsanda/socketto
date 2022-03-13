@@ -15,7 +15,8 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint src/**/*"
   },
   "files": [
     "dist"
@@ -34,7 +35,15 @@
   },
   "homepage": "https://github.com/karsanda/socketto#readme",
   "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.14.0",
+    "@typescript-eslint/parser": "^5.14.0",
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "jest": "^27.5.1",
     "microbundle": "^0.14.2",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.6.2"
   }
 }

@@ -16,7 +16,7 @@ describe('Session', () => {
 
       expect(WebSocketAdapter.create).toHaveBeenCalledWith(url, events)
 
-      jest.spyOn(session.adapter, 'readyState', 'get').mockReturnValue(1)
+      jest.spyOn(session.testonly_adapter, 'readyState', 'get').mockReturnValue(1)
       session.close()
     })
   })
@@ -24,11 +24,11 @@ describe('Session', () => {
   describe('#close', () => {
     test('it should call Session.adapter.close', () => {
       const session = new Session(url, events)
-      jest.spyOn(session.adapter, 'close')
-      jest.spyOn(session.adapter, 'readyState', 'get').mockReturnValue(1)
+      jest.spyOn(session.testonly_adapter, 'close')
+      jest.spyOn(session.testonly_adapter, 'readyState', 'get').mockReturnValue(1)
 
       session.close()
-      expect(session.adapter.close).toHaveBeenCalled()
+      expect(session.testonly_adapter.close).toHaveBeenCalled()
     })
 
     test('it should return console.error if readyState is not 1', () => {
@@ -43,11 +43,11 @@ describe('Session', () => {
   describe('#sendMessage', () => {
     test('it should call Session.adapter.send', () => {
       const session = new Session(url, events)
-      jest.spyOn(session.adapter, 'send').mockImplementation(() => {})
-      jest.spyOn(session.adapter, 'readyState', 'get').mockReturnValue(1)
+      jest.spyOn(session.testonly_adapter, 'send').mockImplementation(() => {})
+      jest.spyOn(session.testonly_adapter, 'readyState', 'get').mockReturnValue(1)
 
       session.sendMessage('stub-data')
-      expect(session.adapter.send).toHaveBeenCalledWith('stub-data')
+      expect(session.testonly_adapter.send).toHaveBeenCalledWith('stub-data')
     })
 
     test('it should return console.error if readyState is not 1', () => {
@@ -72,7 +72,7 @@ describe('Session', () => {
 
       const session = new Session(url, events)
       process.env.NODE_ENV = 'development'
-      expect(session.adapter).toBe(undefined)
+      expect(session.testonly_adapter).toBe(undefined)
 
       process.env = OLD_ENV
     })

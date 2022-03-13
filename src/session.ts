@@ -1,5 +1,11 @@
 import { WebSocketAdapter } from './adapter'
 
+function checkConnection(adapter: WebSocketAdapter, command: () => void) {
+  return adapter.readyState === 1
+    ? command()
+    : console.error('Connection to WebSocket has not been opened yet.')
+}
+
 export class Session {
   static adapter: WebSocketAdapter
 
@@ -7,7 +13,7 @@ export class Session {
     Session.adapter = WebSocketAdapter.create(url, events)
   }
 
-  get adapter() {
+  get testonly_adapter() {
     return process.env.NODE_ENV === 'test' ? Session.adapter : undefined
   }
 
@@ -22,10 +28,4 @@ export class Session {
   readyState() {
     return Session.adapter.readyState
   }
-}
-
-function checkConnection(adapter: WebSocketAdapter, command: () => void) {
-  adapter.readyState === 1
-    ? command()
-    : console.error("Connection to WebSocket has not been opened yet.")
 }
