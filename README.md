@@ -1,4 +1,4 @@
-# Socketto [![npm version](https://badge.fury.io/js/socketto.svg)](https://badge.fury.io/js/socketto)
+# Socketto <a href="https://www.npmjs.org/package/socketto"><img src="https://img.shields.io/npm/v/socketto.svg?style=flat" alt="npm">  
 Socketto is a tiny wrapper for [WebSocket Web API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)  
   
 ## Installation
