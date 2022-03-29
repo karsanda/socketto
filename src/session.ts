@@ -21,7 +21,7 @@ export class Session {
     checkConnection(Session.adapter, () => Session.adapter.close())
   }
 
-  sendMessage(data: any) {
+  send(data: any) {
     checkConnection(Session.adapter, () => Session.adapter.send(data))
   }
 

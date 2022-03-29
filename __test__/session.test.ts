@@ -40,13 +40,13 @@ describe('Session', () => {
     })
   })
 
-  describe('#sendMessage', () => {
+  describe('#send', () => {
     test('it should call Session.adapter.send', () => {
       const session = new Session(url, events)
       jest.spyOn(session.testonly_adapter, 'send').mockImplementation(() => {})
       jest.spyOn(session.testonly_adapter, 'readyState', 'get').mockReturnValue(1)
 
-      session.sendMessage('stub-data')
+      session.send('stub-data')
       expect(session.testonly_adapter.send).toHaveBeenCalledWith('stub-data')
     })
 
@@ -54,7 +54,7 @@ describe('Session', () => {
       const session = new Session(url, events)
       jest.spyOn(console, 'error').mockImplementation(() => {})
 
-      session.sendMessage('stub-data')
+      session.send('stub-data')
       expect(console.error).toHaveBeenCalledWith('Connection to WebSocket has not been opened yet.')
     })
   })

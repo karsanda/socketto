@@ -34,9 +34,9 @@ ws.close()
 ```
 Close the WebSocket connection
 
-### .sendMessage()
+### .send()
 ```
-ws.sendMessage('send-dummy-message')
+ws.send('send-dummy-message')
 ```
 Send a data through WebSocket connection. It receives data as parameter.  
 
