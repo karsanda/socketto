@@ -1,4 +1,4 @@
-# Socketto <a href="https://www.npmjs.org/package/socketto"><img src="https://img.shields.io/npm/v/socketto.svg?style=flat" alt="npm"> <img alt="NPM" src="https://img.shields.io/npm/l/socketto">  
+# Socketto <a href="https://www.npmjs.org/package/socketto"><img src="https://img.shields.io/npm/v/socketto.svg?style=flat" alt="npm"> <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/socketto"> <img alt="NPM" src="https://img.shields.io/npm/l/socketto">  
 Socketto is a tiny wrapper for [WebSocket Web API](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)  
   
 ## Installation
