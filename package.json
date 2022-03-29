@@ -16,7 +16,7 @@
     "build": "microbundle --no-sourcemap --generateTypes false --compress",
     "dev": "microbundle watch --no-sourcemap --generateTypes false",
     "test": "jest",
-    "lint": "eslint src/**/*"
+    "lint": "eslint --ext .ts"
   },
   "files": [
     "dist"

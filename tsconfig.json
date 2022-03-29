@@ -3,7 +3,8 @@
     "target": "ES5"
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
+    "./__test__/**/*.ts"
   ],
   "files": [
     "src/global.d.ts"

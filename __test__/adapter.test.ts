@@ -1,4 +1,4 @@
-import { WebSocketAdapter} from '../src/adapter'
+import { WebSocketAdapter } from '../src/adapter'
 
 describe('WebSocketAdapter', () => {
   const url = 'ws://stub-url'
