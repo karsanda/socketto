@@ -26,7 +26,15 @@
     "url": "git+https://github.com/karsanda/socketto.git"
   },
   "keywords": [
-    "websocket"
+    "websocket",
+    "websockets",
+    "socket",
+    "reconnect",
+    "web",
+    "client",
+    "real-time",
+    "tcp",
+    "RFC-6455"
   ],
   "author": "Pinto Karsanda",
   "license": "MIT",
