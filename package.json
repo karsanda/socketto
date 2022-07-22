@@ -43,15 +43,15 @@
   },
   "homepage": "https://github.com/karsanda/socketto#readme",
   "devDependencies": {
-    "@types/jest": "^27.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.23.0",
-    "@typescript-eslint/parser": "^5.23.0",
-    "eslint": "^8.15.0",
+    "@types/jest": "^27.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
+    "@typescript-eslint/parser": "^5.30.7",
+    "eslint": "^8.20.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^27.5.1",
     "microbundle": "^0.14.2",
-    "ts-jest": "^27.1.4",
-    "typescript": "^4.6.4"
+    "ts-jest": "^27.1.5",
+    "typescript": "^4.7.4"
   }
 }
