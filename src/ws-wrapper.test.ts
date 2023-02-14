@@ -30,8 +30,15 @@ describe('#constructor', () => {
   test('should return default value based on given params', () => {
     expect(wrapper.url).toEqual(url)
     expect(wrapper.websocketEvents).toEqual(wsEvents)
-    expect(wrapper.waitToReconnect).toEqual(3000)
-    expect(wrapper.maxReconnectAttempts).toEqual(3)
+    expect(wrapper.options.waitToReconnect).toEqual(3000)
+    expect(wrapper.options.maxReconnectAttempts).toEqual(3)
+  })
+
+  test('should be able to override options', () => {
+    const options = { waitToReconnect: 5000, maxReconnectAttempts: 5 }
+    const wrapper2 = new WsWrapper(url, wsEvents, options)
+    expect(wrapper2.options.waitToReconnect).toEqual(5000)
+    expect(wrapper2.options.maxReconnectAttempts).toEqual(5)
   })
 })
 

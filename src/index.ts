@@ -3,13 +3,8 @@ import WsWrapper from './ws-wrapper'
 export default class Socketto {
   private socket: WsWrapper
 
-  constructor(
-    url: string,
-    websocketEvents: WebSocketEvents,
-    waitToReconnect?: number,
-    maxReconnectAttempts?: number
-  ) {
-    this.socket = new WsWrapper(url, websocketEvents, waitToReconnect, maxReconnectAttempts)
+  constructor(url: string, websocketEvents: WebSocketEvents, options: WebSocketOptions) {
+    this.socket = new WsWrapper(url, websocketEvents, options)
   }
 
   createConnection() {

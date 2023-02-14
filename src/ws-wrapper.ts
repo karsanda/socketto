@@ -5,9 +5,10 @@ export default class WsWrapper {
 
   socket: WebSocket | undefined
 
-  waitToReconnect: number
-
-  maxReconnectAttempts: number
+  options: WebSocketOptions = {
+    waitToReconnect: 3000,
+    maxReconnectAttempts: 3
+  }
 
   cleanup = false
 
@@ -18,13 +19,11 @@ export default class WsWrapper {
   constructor(
     url: string,
     websocketEvents: WebSocketEvents,
-    waitToReconnect?: number,
-    maxReconnectAttempts?: number
+    options?: WebSocketOptions
   ) {
     this.url = url
     this.websocketEvents = websocketEvents
-    this.waitToReconnect = waitToReconnect || 3000
-    this.maxReconnectAttempts = maxReconnectAttempts || 3
+    this.options = options || this.options
   }
 
   createConnection() {
@@ -74,12 +73,12 @@ export default class WsWrapper {
 
   reconnect() {
     // calculating timeout based on exponential backoff
-    const timeout = 2 ** this.reconnectAttempts * this.waitToReconnect
+    const timeout = 2 ** this.reconnectAttempts * this.options.waitToReconnect
     if (this.websocketEvents.onRetry) this.websocketEvents.onRetry()
 
     setTimeout(() => {
-      if (this.reconnectAttempts < this.maxReconnectAttempts) {
-        console.info('Socketto:', `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.maxReconnectAttempts}`)
+      if (this.reconnectAttempts < this.options.maxReconnectAttempts) {
+        console.info('Socketto:', `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.options.maxReconnectAttempts}`)
         this.createConnection()
         this.reconnectAttempts++
       } else {

@@ -6,3 +6,8 @@ type WebSocketEvents = {
   onRetry?: () => void
   onFailed?: () => void
 }
+
+type WebSocketOptions = {
+  waitToReconnect: number
+  maxReconnectAttempts: number
+}
