@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES5"
+    "target": "ES5",
+    "strict": true
   },
   "include": [
-    "./src/**/*.ts",
-    "./__test__/**/*.ts"
+    "./src/**/*.ts"
   ],
   "files": [
     "src/global.d.ts"
