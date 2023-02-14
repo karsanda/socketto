@@ -6,7 +6,8 @@ const url = 'ws://localhost:8080'
 const wsEvents = {
   onOpen: () => {},
   onReconnect: () => {},
-  onMessage: (message: MessageEvent<any>) => {},
+  // eslint-disable-next-line no-console
+  onMessage: (message: MessageEvent<any>) => console.log(message.data),
   onRetry: () => {},
   onFailed: () => {}
 }
@@ -21,6 +22,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  wrapper.closeConnection()
   WS.clean()
 })
 
@@ -46,6 +48,23 @@ describe('#handleOpen', () => {
     jest.spyOn(wsEvents, 'onOpen')
     wrapper.handleOpen()
     expect(wsEvents.onOpen).toHaveBeenCalled()
+  })
+
+  test('should call wsEvents.onReconnect when connection is reconnect', () => {
+    jest.spyOn(wsEvents, 'onReconnect')
+    wrapper.reopened = true
+    wrapper.handleOpen()
+    expect(wsEvents.onReconnect).toHaveBeenCalled()
+  })
+})
+
+describe('#handleMessage', () => {
+  test('should call wsEvents.onMessage', () => {
+    const message = new MessageEvent('hello')
+    jest.spyOn(wsEvents, 'onMessage')
+
+    wrapper.handleMessage(message)
+    expect(wsEvents.onMessage).toHaveBeenCalledWith(message)
   })
 })
 
@@ -97,8 +116,8 @@ describe('#closeConnection', () => {
   test('should set cleanup to true and called .socket.close()', async () => {
     wrapper.createConnection()
     jest.spyOn(wrapper.socket as WebSocket, 'close')
-
     await server.connected
+
     wrapper.closeConnection()
     expect(wrapper.cleanup).toBe(true)
     expect(wrapper.socket?.close).toHaveBeenCalled()
@@ -106,20 +125,30 @@ describe('#closeConnection', () => {
 })
 
 describe('#send', () => {
+  test('should not call .socket.send() when .socket is undefined', () => {
+    wrapper.send('message')
+    expect(wrapper.socket?.send).toBeUndefined()
+  })
+
   test('it should call .socket.send() when called', async () => {
     wrapper.createConnection()
     await server.connected
-    jest.spyOn(wrapper.socket as WebSocket, 'send')
 
+    jest.spyOn(wrapper.socket as WebSocket, 'send')
     wrapper.send('message')
     expect(wrapper.socket?.send).toHaveBeenCalledWith('message')
   })
 })
 
 describe('#readyState', () => {
+  test('should not call .socket.readyState when .socket is undefined', () => {
+    expect(wrapper.readyState).toBeUndefined()
+  })
+
   test('it should call .socket.readyState when called', async () => {
     wrapper.createConnection()
     await server.connected
-    expect(wrapper.socket?.readyState).toEqual(1)
+
+    expect(wrapper.readyState).toEqual(1)
   })
 })

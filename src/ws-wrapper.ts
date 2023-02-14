@@ -11,9 +11,9 @@ export default class WsWrapper {
 
   cleanup = false
 
-  private reconnectAttempts = 0
+  reopened = false
 
-  private reopened = false
+  private reconnectAttempts = 0
 
   constructor(
     url: string,
@@ -30,9 +30,14 @@ export default class WsWrapper {
   createConnection() {
     this.socket = new WebSocket(this.url)
     this.socket.onopen = this.handleOpen.bind(this) as WebSocket['onopen']
-    this.socket.onmessage = this.websocketEvents.onMessage?.bind(this) as WebSocket['onmessage']
+    this.socket.onmessage = this.handleMessage.bind(this) as WebSocket['onmessage']
     this.socket.onclose = this.handleClose.bind(this) as WebSocket['onclose']
     this.socket.onerror = this.handleError.bind(this) as WebSocket['onerror']
+  }
+
+  closeConnection() {
+    this.cleanup = true
+    this.socket?.close()
   }
 
   handleOpen() {
@@ -48,13 +53,17 @@ export default class WsWrapper {
     this.reconnectAttempts = 0
   }
 
+  handleMessage(message: MessageEvent) {
+    if (this.websocketEvents.onMessage) this.websocketEvents.onMessage(message)
+  }
+
   handleFailed() {
     console.error('Socketto:', `Failed to create a connection to ${this.url}`)
     if (this.websocketEvents.onFailed) this.websocketEvents.onFailed()
   }
 
-  handleError() {
-    if (this.websocketEvents.onError) this.websocketEvents.onError()
+  handleError(event: Event) {
+    console.error('Socketto', `Error: ${event}`)
   }
 
   handleClose() {
@@ -77,11 +86,6 @@ export default class WsWrapper {
         this.handleFailed()
       }
     }, timeout)
-  }
-
-  closeConnection() {
-    this.cleanup = true
-    this.socket?.close()
   }
 
   send(message: string) {

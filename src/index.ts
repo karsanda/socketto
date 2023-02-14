@@ -16,12 +16,12 @@ export default class Socketto {
     this.socket.createConnection()
   }
 
-  send(message: string) {
-    this.socket.send(message)
-  }
-
   closeConnection() {
     this.socket.closeConnection()
+  }
+
+  send(message: string) {
+    this.socket.send(message)
   }
 
   get readyState() {

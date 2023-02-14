@@ -5,5 +5,4 @@ type WebSocketEvents = {
   onMessage?: (message: MessageEvent<any>) => void
   onRetry?: () => void
   onFailed?: () => void
-  onError?: () => void
 }
