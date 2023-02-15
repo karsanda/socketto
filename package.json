@@ -1,6 +1,6 @@
 {
   "name": "socketto",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Tiny wrapper for WebSocket Web API",
   "type": "module",
   "source": "src/index.ts",
