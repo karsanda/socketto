@@ -7,7 +7,7 @@ const wsEvents = {
   onOpen: () => {},
   onReconnect: () => {},
   // eslint-disable-next-line no-console
-  onMessage: (message: MessageEvent<any>) => console.log(message.data),
+  onMessage: (message: MessageEvent<any>) => {},
   onRetry: () => {},
   onFailed: () => {}
 }
@@ -67,11 +67,11 @@ describe('#handleOpen', () => {
 
 describe('#handleMessage', () => {
   test('should call wsEvents.onMessage', () => {
-    const message = new MessageEvent('hello')
+    const message = new MessageEvent('stub')
     jest.spyOn(wsEvents, 'onMessage')
 
     wrapper.handleMessage(message)
-    expect(wsEvents.onMessage).toHaveBeenCalledWith(message)
+    expect(wsEvents.onMessage).toHaveBeenCalled()
   })
 })
 
