@@ -3,7 +3,7 @@
    <img src="https://img.shields.io/npm/v/socketto.svg?style=flat" alt="npm"></a>
    <img alt="NPM" src="https://img.shields.io/npm/l/socketto">
 </h1>  
-<p align="center">< 1 kB wrapper for <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket">WebSocket Web API</a> with reconnect feature based on exponential backoff</p>  
+<p align="center">Tiny wrapper for <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket">WebSocket Web API</a></p>
   
 ## Installation
 Install with npm:
@@ -17,16 +17,26 @@ yarn add socketto
 ```
 
 ## Usage
-After installation, you can create a WebSocket connection by using `openConnection`. All events are optional, but the URL is required:  
+You can create a WebSocket connection based on the example below:
 ```
-import { openConnection } from 'socketto'
+import Socketto from 'socketto'
 
-const ws = openConnection('ws://localhost:8080', {
-  onOpen: () => console.log('OPEN'),
-  onConnectFailed: () => console.log('FAILED TO CONNECT'),
-  onMessage: (data) => { console.log(`RECEIVED MESSAGE ${data}`) },
-  onError: (err) => { console.log(`ERROR: ${err}`) }
-})
+const ws = new Socketto('ws://localhost:8080',
+  { // these events are optional
+    onOpen: () => console.log('OPEN'),
+    onReconnect: () => console.log('RECONNECT'),
+    onMessage: (data) => { console.log(`RECEIVED MESSAGE ${data}`) },
+    onRetry: () => { console.log('RETRY TO CONNECT') }
+    onFailed: () => { console.log('FAILED TO CREATE CONNECTION') }
+  },
+  { // these options are optional
+    waitToReconnect: 1000,
+    maxReconnectAttempts: 4
+  }
+)
+
+// open connection
+ws.openConnection()
 ```
 
 ## Events  
@@ -35,21 +45,31 @@ You can add callbacks up to four event handler that WebSocket listens to:
 ### onOpen()  
 This event will be triggered when WebSocket connection is opened
 
-### onConnectFailed()  
-This event will be triggered when WebSocket is failed to connect after trying to reconnect a few times  
+### onReconnect()
+This event will be triggered when WebSocket connection is estabilished successfully after retry
 
 ### onMessage(data)
 This event will be triggered when WebSocket receives message from server. Usually is used to render the message in UI. The parameter can be anything (e.g. string, object, etc.)  
 
-### onError(err)
-This event will be triggered when WebSocket encounters an error (e.g. failed to estabilish a connection)
+### onRetry()
+This event will be triggered everytime WebSocket try to reconnect
+
+### onFailed()
+This event will be triggered when WebSocket failed to create a connection after retry a certain times
+
+## Options
+### waitToReconnect
+How long WebSocket will wait before trying to reconnect. Default value is 3 seconds
+
+### maxReconnectAttempts
+Maximum retry number allowed. Default value is 3
 
 ## Reconnect  
-Socketto does reconnect by default using [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff). It means that Socketto will increase the waiting time between retries after each retry failure. On default configuration, Socketto will try to reconnect 3 times, and wait for 3 seconds at the first retry. You can change the configuration when opening the connection. For example:
+Socketto can reconnect by default using [exponential backoff](https://en.wikipedia.org/wiki/Exponential_backoff). It means that Socketto will increase the waiting time between retries after each retry failure. On default configuration, Socketto will try to reconnect 3 times, and wait for 3 seconds at the first retry. You can change the configuration when opening the connection. For example:
 ```
-import { openConnection } from 'socketto'
+import Socketto from 'socketto'
 
-const ws = openConnection('ws://localhost:8080', {
+const ws = new Socketto('ws://localhost:8080', {
   // event callbacks
 }, {
   maxReconnectAttempts: 5,
@@ -59,28 +79,32 @@ const ws = openConnection('ws://localhost:8080', {
 With this configuration, Socketto will try to reconnect 5 times maximum, and will wait for 5 seconds for the first retry.
 
 ## API
-After WebSocket connection is estabilished, you can use these API methods:  
+### .createConnection()
+```
+ws.createConnection()
+```
+This API will try to open a WebSocket connection based on constructor parameters
 
-### .close()  
+### .closeConnection()
 ```
-ws.close()
+ws.closeConnection()
 ```
-Close the WebSocket connection. This API doesn't trigger exponential backoff and reconnect
+Close the WebSocket connection. By calling this API, WebSocket will immediately close its connection without retry
 
 ### .send()
 ```
 ws.send('send-dummy-message')
 ```
-Send a data through WebSocket connection. It receives data as parameter.  
+Send any data through WebSocket connection
 
-### .readyState()
+### .readyState
 ```
-ws.readyState()
+ws.readyState
 ```
 Returns the current state of WebSocket connection based on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket/readyState)  
 |Value | State      | Description                                              |
 |------|------------|----------------------------------------------------------|
 | 0    | CONNECTING | Socket has been created. The connection is not yet open. |
-| 1    | OPEN	    | The connection is open and ready to communicate.         |
+| 1    | OPEN       | The connection is open and ready to communicate.         |
 | 2    | CLOSING    | The connection is in the process of closing.             |
-| 3    | CLOSED	    | The connection is closed or couldn't be opened.          |  
+| 3    | CLOSED     | The connection is closed or couldn't be opened.          |
