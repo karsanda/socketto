@@ -26,7 +26,7 @@ const ws = new Socketto('ws://localhost:8080',
     onOpen: () => console.log('OPEN'),
     onReconnect: () => console.log('RECONNECT'),
     onMessage: (data) => { console.log(`RECEIVED MESSAGE ${data}`) },
-    onRetry: () => { console.log('RETRY TO CONNECT') }
+    onRetry: () => { console.log('RETRY TO CONNECT') },
     onFailed: () => { console.log('FAILED TO CREATE CONNECTION') }
   },
   { // these options are optional
