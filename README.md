@@ -36,7 +36,7 @@ const ws = new Socketto('ws://localhost:8080',
 )
 
 // open connection
-ws.openConnection()
+ws.createConnection()
 ```
 
 ## Events  
