@@ -12,6 +12,10 @@
     "default": "./dist/index.modern.js"
   },
   "types": "dist/index.d.ts",
+  "engines" : {
+    "npm" : ">=8.0.0",
+    "node" : ">=16.0.0"
+  },
   "scripts": {
     "build": "microbundle --no-sourcemap --generateTypes false --compress",
     "dev": "microbundle watch --no-sourcemap --generateTypes false",
