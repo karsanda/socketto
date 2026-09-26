@@ -40,9 +40,12 @@
   },
   "scripts": {
     "build": "tsdown",
+    "size": "size-limit",
     "dev": "tsdown --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "test": "vitest run --project unit",
+    "test:browser": "vitest run --project browser",
+    "test:coverage": "vitest run --project unit --coverage",
+    "test:watch": "vitest --project unit",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "format": "oxfmt",
@@ -51,13 +54,20 @@
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
+    "@size-limit/preset-small-lib": "^14.0.0",
+    "@types/ws": "^8.18.1",
+    "@vitest/browser-playwright": "5.0.2",
+    "@vitest/coverage-v8": "5.0.2",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
+    "playwright": "^1.63.0",
     "publint": "^0.3.24",
+    "size-limit": "^14.0.0",
     "tsdown": "^0.23.0",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.1",
-    "vitest-websocket-mock": "^0.8.0"
+    "vitest": "^5.0.2",
+    "vitest-websocket-mock": "^0.8.0",
+    "ws": "^8.21.3"
   },
   "engines": {
     "node": ">=22"
