@@ -1,0 +1,40 @@
+name: Bug report
+description: Something in Socketto isn't working as expected
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Socketto version
+      placeholder: 3.0.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser (and version) or runtime, and the framework if any
+      placeholder: Chrome 140, React 19
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal code that shows the problem, including the options and events you pass
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: 'Include logs if you can (`logger: console`)'
+    validations:
+      required: true

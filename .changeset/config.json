@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@4/schema.json",
+  "changelog": ["@changesets/changelog-github", { "repo": "karsanda/socketto" }],
+  "format": "oxfmt",
+  "commit": false,
+  "access": "public",
+  "baseBranch": "main"
+}

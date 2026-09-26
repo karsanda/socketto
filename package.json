@@ -38,6 +38,10 @@
     },
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsdown",
     "size": "size-limit",
@@ -50,10 +54,14 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "release": "changeset publish",
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@arethetypeswrong/core": "^0.18.5",
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "@size-limit/preset-small-lib": "^14.0.0",
     "@types/ws": "^8.18.1",
     "@vitest/browser-playwright": "5.0.2",
