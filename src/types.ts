@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-type WebSocketEvents = {
+export type WebSocketEvents = {
   onOpen?: () => void
   onReconnect?: () => void
   onMessage?: (message: MessageEvent<any>) => void
@@ -7,7 +7,9 @@ type WebSocketEvents = {
   onFailed?: () => void
 }
 
-type WebSocketOptions = {
+export type WebSocketOptions = {
   waitToReconnect: number
   maxReconnectAttempts: number
 }
+
+export type WebSocketData = Parameters<WebSocket['send']>[0]

@@ -1,3 +1,10 @@
+import type { WebSocketData, WebSocketEvents, WebSocketOptions } from './types'
+
+const DEFAULT_OPTIONS: WebSocketOptions = {
+  waitToReconnect: 3000,
+  maxReconnectAttempts: 3
+}
+
 export default class WsWrapper {
   url: string
 
@@ -5,10 +12,7 @@ export default class WsWrapper {
 
   socket: WebSocket | undefined
 
-  options: WebSocketOptions = {
-    waitToReconnect: 3000,
-    maxReconnectAttempts: 3
-  }
+  options: WebSocketOptions
 
   cleanup = false
 
@@ -16,17 +20,20 @@ export default class WsWrapper {
 
   private reconnectAttempts = 0
 
+  private reconnectTimer: ReturnType<typeof setTimeout> | undefined
+
   constructor(
     url: string,
     websocketEvents: WebSocketEvents,
-    options?: WebSocketOptions
+    options?: Partial<WebSocketOptions>
   ) {
     this.url = url
     this.websocketEvents = websocketEvents
-    this.options = options || this.options
+    this.options = { ...DEFAULT_OPTIONS, ...options }
   }
 
   createConnection() {
+    this.cleanup = false
     this.socket = new WebSocket(this.url)
     this.socket.onopen = this.handleOpen.bind(this) as WebSocket['onopen']
     this.socket.onmessage = this.handleMessage.bind(this) as WebSocket['onmessage']
@@ -36,6 +43,10 @@ export default class WsWrapper {
 
   closeConnection() {
     this.cleanup = true
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer)
+      this.reconnectTimer = undefined
+    }
     this.socket?.close()
   }
 
@@ -46,9 +57,9 @@ export default class WsWrapper {
       this.websocketEvents.onReconnect()
     } else if (this.websocketEvents.onOpen) {
       this.websocketEvents.onOpen()
-      this.reopened = true
     }
 
+    this.reopened = true
     this.reconnectAttempts = 0
   }
 
@@ -62,7 +73,7 @@ export default class WsWrapper {
   }
 
   handleError(event: Event) {
-    console.error('Socketto', `Error: ${event}`)
+    console.error('Socketto:', 'WebSocket error', event)
   }
 
   handleClose() {
@@ -72,23 +83,25 @@ export default class WsWrapper {
   }
 
   reconnect() {
+    if (this.reconnectAttempts >= this.options.maxReconnectAttempts) {
+      this.handleFailed()
+      return
+    }
+
     // calculating timeout based on exponential backoff
     const timeout = 2 ** this.reconnectAttempts * this.options.waitToReconnect
     if (this.websocketEvents.onRetry) this.websocketEvents.onRetry()
 
-    setTimeout(() => {
-      if (this.reconnectAttempts < this.options.maxReconnectAttempts) {
-        console.info('Socketto:', `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.options.maxReconnectAttempts}`)
-        this.createConnection()
-        this.reconnectAttempts++
-      } else {
-        this.handleFailed()
-      }
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = undefined
+      console.info('Socketto:', `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.options.maxReconnectAttempts}`)
+      this.createConnection()
+      this.reconnectAttempts++
     }, timeout)
   }
 
-  send(message: string) {
-    this.socket?.send(message)
+  send(data: WebSocketData) {
+    this.socket?.send(data)
   }
 
   get readyState() {

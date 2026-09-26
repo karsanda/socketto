@@ -24,6 +24,7 @@ beforeEach(() => {
 afterEach(() => {
   wrapper.closeConnection()
   WS.clean()
+  jest.restoreAllMocks()
 })
 
 describe('#constructor', () => {
@@ -40,6 +41,12 @@ describe('#constructor', () => {
     expect(wrapper2.options.waitToReconnect).toEqual(5000)
     expect(wrapper2.options.maxReconnectAttempts).toEqual(5)
   })
+
+  test('should merge partial options with defaults', () => {
+    const wrapper2 = new WsWrapper(url, wsEvents, { waitToReconnect: 5000 })
+    expect(wrapper2.options.waitToReconnect).toEqual(5000)
+    expect(wrapper2.options.maxReconnectAttempts).toEqual(3)
+  })
 })
 
 describe('#createConnection', () => {
@@ -47,6 +54,13 @@ describe('#createConnection', () => {
     expect(wrapper.socket).toBe(undefined)
     wrapper.createConnection()
     expect(wrapper.socket instanceof WebSocket).toBe(true)
+  })
+
+  test('should reset cleanup so reconnect works after a previous close', () => {
+    wrapper.closeConnection()
+    expect(wrapper.cleanup).toBe(true)
+    wrapper.createConnection()
+    expect(wrapper.cleanup).toBe(false)
   })
 })
 
@@ -62,6 +76,15 @@ describe('#handleOpen', () => {
     wrapper.reopened = true
     wrapper.handleOpen()
     expect(wsEvents.onReconnect).toHaveBeenCalled()
+  })
+
+  test('should call onReconnect on reopen even when onOpen is not given', () => {
+    const onReconnect = jest.fn()
+    const wrapper2 = new WsWrapper(url, { onReconnect })
+    wrapper2.handleOpen()
+    expect(onReconnect).not.toHaveBeenCalled()
+    wrapper2.handleOpen()
+    expect(onReconnect).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -109,11 +132,23 @@ describe('#handleClose', () => {
     expect(wrapper.createConnection).toHaveBeenCalledTimes(3)
 
     wrapper.handleClose()
-    jest.advanceTimersByTime(24000)
-    expect(wsEvents.onRetry).toHaveBeenCalledTimes(4)
+    expect(wsEvents.onRetry).toHaveBeenCalledTimes(3)
     expect(wrapper.createConnection).toHaveBeenCalledTimes(3)
     expect(console.error).toHaveBeenCalled()
     expect(wsEvents.onFailed).toHaveBeenCalledTimes(1)
+
+    jest.useRealTimers()
+  })
+
+  test('should not reconnect when closed while a retry is pending', () => {
+    jest.useFakeTimers()
+    jest.spyOn(wsEvents, 'onRetry').mockImplementation(() => {})
+    jest.spyOn(wrapper, 'createConnection').mockImplementation(() => {})
+
+    wrapper.handleClose()
+    wrapper.closeConnection()
+    jest.advanceTimersByTime(3000)
+    expect(wrapper.createConnection).not.toHaveBeenCalled()
 
     jest.useRealTimers()
   })
