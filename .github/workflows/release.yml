@@ -26,9 +26,10 @@ jobs:
       # Opens a "Version Packages" PR while changesets are pending; publishes once it's merged
       - uses: changesets/action@v2
         with:
-          version: pnpm changeset version
-          publish: pnpm release
-          title: 'chore: version packages'
-          commit: 'chore: version packages'
+          version-script: pnpm changeset version
+          publish-script: pnpm release
+          pr-title: 'chore: version packages'
+          commit-message: 'chore: version packages'
         env:
+          # read by @changesets/changelog-github during `changeset version`
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
