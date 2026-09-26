@@ -1,4 +1,5 @@
-import WS from 'jest-websocket-mock'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import WS from 'vitest-websocket-mock'
 import Socketto from './index'
 
 const url = 'ws://localhost:8080'
@@ -6,13 +7,13 @@ const url = 'ws://localhost:8080'
 let server: WS
 
 beforeEach(() => {
-  jest.spyOn(console, 'info').mockImplementation(() => {})
+  vi.spyOn(console, 'info').mockImplementation(() => {})
+  vi.spyOn(console, 'error').mockImplementation(() => {})
   server = new WS(url)
 })
 
 afterEach(() => {
   WS.clean()
-  jest.restoreAllMocks()
 })
 
 describe('Socketto', () => {
@@ -33,7 +34,7 @@ describe('Socketto', () => {
   })
 
   test('should pass the MessageEvent to onMessage', async () => {
-    const onMessage = jest.fn()
+    const onMessage = vi.fn<(event: MessageEvent) => void>()
     const ws = new Socketto(url, { onMessage })
     ws.createConnection()
     await server.connected

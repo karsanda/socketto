@@ -1,13 +1,12 @@
-/* eslint-disable no-unused-vars */
-import WS from 'jest-websocket-mock'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import WS from 'vitest-websocket-mock'
 import WsWrapper from './ws-wrapper'
 
 const url = 'ws://localhost:8080'
 const wsEvents = {
   onOpen: () => {},
   onReconnect: () => {},
-  // eslint-disable-next-line no-console
-  onMessage: (message: MessageEvent<any>) => {},
+  onMessage: (_message: MessageEvent<any>) => {},
   onRetry: () => {},
   onFailed: () => {}
 }
@@ -16,7 +15,8 @@ let server: WS
 let wrapper: WsWrapper
 
 beforeEach(() => {
-  jest.spyOn(console, 'info').mockImplementation(() => {})
+  vi.spyOn(console, 'info').mockImplementation(() => {})
+  vi.spyOn(console, 'error').mockImplementation(() => {})
   server = new WS(url)
   wrapper = new WsWrapper(url, wsEvents)
 })
@@ -24,7 +24,6 @@ beforeEach(() => {
 afterEach(() => {
   wrapper.closeConnection()
   WS.clean()
-  jest.restoreAllMocks()
 })
 
 describe('#constructor', () => {
@@ -66,20 +65,20 @@ describe('#createConnection', () => {
 
 describe('#handleOpen', () => {
   test('should call wsEvents.onOpen when connection is opened', () => {
-    jest.spyOn(wsEvents, 'onOpen')
+    vi.spyOn(wsEvents, 'onOpen')
     wrapper.handleOpen()
     expect(wsEvents.onOpen).toHaveBeenCalled()
   })
 
   test('should call wsEvents.onReconnect when connection is reconnect', () => {
-    jest.spyOn(wsEvents, 'onReconnect')
+    vi.spyOn(wsEvents, 'onReconnect')
     wrapper.reopened = true
     wrapper.handleOpen()
     expect(wsEvents.onReconnect).toHaveBeenCalled()
   })
 
   test('should call onReconnect on reopen even when onOpen is not given', () => {
-    const onReconnect = jest.fn()
+    const onReconnect = vi.fn<() => void>()
     const wrapper2 = new WsWrapper(url, { onReconnect })
     wrapper2.handleOpen()
     expect(onReconnect).not.toHaveBeenCalled()
@@ -91,7 +90,7 @@ describe('#handleOpen', () => {
 describe('#handleMessage', () => {
   test('should call wsEvents.onMessage', () => {
     const message = new MessageEvent('stub')
-    jest.spyOn(wsEvents, 'onMessage')
+    vi.spyOn(wsEvents, 'onMessage')
 
     wrapper.handleMessage(message)
     expect(wsEvents.onMessage).toHaveBeenCalled()
@@ -100,7 +99,7 @@ describe('#handleMessage', () => {
 
 describe('#handleClose', () => {
   test('should not try to reconnect when cleanup', () => {
-    jest.spyOn(wrapper, 'createConnection')
+    vi.spyOn(wrapper, 'createConnection')
     wrapper.cleanup = true
 
     wrapper.handleClose()
@@ -108,26 +107,26 @@ describe('#handleClose', () => {
   })
 
   test('should try to reconnect based on exponential backoff', () => {
-    jest.spyOn(wsEvents, 'onRetry').mockImplementation(() => {})
-    jest.spyOn(wsEvents, 'onFailed').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(wsEvents, 'onRetry').mockImplementation(() => {})
+    vi.spyOn(wsEvents, 'onFailed').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    jest.useFakeTimers()
+    vi.useFakeTimers()
 
-    jest.spyOn(wrapper, 'createConnection').mockImplementation(() => {})
+    vi.spyOn(wrapper, 'createConnection').mockImplementation(() => {})
 
     wrapper.handleClose()
-    jest.advanceTimersByTime(3000)
+    vi.advanceTimersByTime(3000)
     expect(wsEvents.onRetry).toHaveBeenCalledTimes(1)
     expect(wrapper.createConnection).toHaveBeenCalledTimes(1)
 
     wrapper.handleClose()
-    jest.advanceTimersByTime(6000)
+    vi.advanceTimersByTime(6000)
     expect(wsEvents.onRetry).toHaveBeenCalledTimes(2)
     expect(wrapper.createConnection).toHaveBeenCalledTimes(2)
 
     wrapper.handleClose()
-    jest.advanceTimersByTime(12000)
+    vi.advanceTimersByTime(12000)
     expect(wsEvents.onRetry).toHaveBeenCalledTimes(3)
     expect(wrapper.createConnection).toHaveBeenCalledTimes(3)
 
@@ -137,27 +136,27 @@ describe('#handleClose', () => {
     expect(console.error).toHaveBeenCalled()
     expect(wsEvents.onFailed).toHaveBeenCalledTimes(1)
 
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   test('should not reconnect when closed while a retry is pending', () => {
-    jest.useFakeTimers()
-    jest.spyOn(wsEvents, 'onRetry').mockImplementation(() => {})
-    jest.spyOn(wrapper, 'createConnection').mockImplementation(() => {})
+    vi.useFakeTimers()
+    vi.spyOn(wsEvents, 'onRetry').mockImplementation(() => {})
+    vi.spyOn(wrapper, 'createConnection').mockImplementation(() => {})
 
     wrapper.handleClose()
     wrapper.closeConnection()
-    jest.advanceTimersByTime(3000)
+    vi.advanceTimersByTime(3000)
     expect(wrapper.createConnection).not.toHaveBeenCalled()
 
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 })
 
 describe('#closeConnection', () => {
   test('should set cleanup to true and called .socket.close()', async () => {
     wrapper.createConnection()
-    jest.spyOn(wrapper.socket as WebSocket, 'close')
+    vi.spyOn(wrapper.socket as WebSocket, 'close')
     await server.connected
 
     wrapper.closeConnection()
@@ -176,7 +175,7 @@ describe('#send', () => {
     wrapper.createConnection()
     await server.connected
 
-    jest.spyOn(wrapper.socket as WebSocket, 'send')
+    vi.spyOn(wrapper.socket as WebSocket, 'send')
     wrapper.send('message')
     expect(wrapper.socket?.send).toHaveBeenCalledWith('message')
   })

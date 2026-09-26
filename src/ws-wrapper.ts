@@ -1,6 +1,6 @@
-import type { WebSocketData, WebSocketEvents, WebSocketOptions } from './types'
+import type { Data, Events, Options } from './types'
 
-const DEFAULT_OPTIONS: WebSocketOptions = {
+const DEFAULT_OPTIONS: Options = {
   waitToReconnect: 3000,
   maxReconnectAttempts: 3
 }
@@ -8,11 +8,11 @@ const DEFAULT_OPTIONS: WebSocketOptions = {
 export default class WsWrapper {
   url: string
 
-  websocketEvents: WebSocketEvents
+  websocketEvents: Events
 
   socket: WebSocket | undefined
 
-  options: WebSocketOptions
+  options: Options
 
   cleanup = false
 
@@ -22,17 +22,13 @@ export default class WsWrapper {
 
   private reconnectTimer: ReturnType<typeof setTimeout> | undefined
 
-  constructor(
-    url: string,
-    websocketEvents: WebSocketEvents,
-    options?: Partial<WebSocketOptions>
-  ) {
+  constructor(url: string, websocketEvents: Events, options?: Partial<Options>) {
     this.url = url
     this.websocketEvents = websocketEvents
     this.options = { ...DEFAULT_OPTIONS, ...options }
   }
 
-  createConnection() {
+  createConnection(): void {
     this.cleanup = false
     this.socket = new WebSocket(this.url)
     this.socket.onopen = this.handleOpen.bind(this) as WebSocket['onopen']
@@ -41,7 +37,7 @@ export default class WsWrapper {
     this.socket.onerror = this.handleError.bind(this) as WebSocket['onerror']
   }
 
-  closeConnection() {
+  closeConnection(): void {
     this.cleanup = true
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer)
@@ -50,7 +46,7 @@ export default class WsWrapper {
     this.socket?.close()
   }
 
-  handleOpen() {
+  handleOpen(): void {
     console.info('Socketto:', 'WebSocket connection is opened')
 
     if (this.reopened && this.websocketEvents.onReconnect) {
@@ -63,26 +59,26 @@ export default class WsWrapper {
     this.reconnectAttempts = 0
   }
 
-  handleMessage(message: MessageEvent) {
+  handleMessage(message: MessageEvent): void {
     if (this.websocketEvents.onMessage) this.websocketEvents.onMessage(message)
   }
 
-  handleFailed() {
+  handleFailed(): void {
     console.error('Socketto:', `Failed to create a connection to ${this.url}`)
     if (this.websocketEvents.onFailed) this.websocketEvents.onFailed()
   }
 
-  handleError(event: Event) {
+  handleError(event: Event): void {
     console.error('Socketto:', 'WebSocket error', event)
   }
 
-  handleClose() {
+  handleClose(): void {
     console.info('Socketto:', 'WebSocket connection is closed')
     if (this.cleanup) return
     this.reconnect()
   }
 
-  reconnect() {
+  reconnect(): void {
     if (this.reconnectAttempts >= this.options.maxReconnectAttempts) {
       this.handleFailed()
       return
@@ -94,17 +90,20 @@ export default class WsWrapper {
 
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = undefined
-      console.info('Socketto:', `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.options.maxReconnectAttempts}`)
+      console.info(
+        'Socketto:',
+        `Trying to reconnect: ${this.reconnectAttempts + 1} of ${this.options.maxReconnectAttempts}`
+      )
       this.createConnection()
       this.reconnectAttempts++
     }, timeout)
   }
 
-  send(data: WebSocketData) {
+  send(data: Data): void {
     this.socket?.send(data)
   }
 
-  get readyState() {
+  get readyState(): number | undefined {
     return this.socket?.readyState
   }
 }

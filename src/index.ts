@@ -1,28 +1,36 @@
 import WsWrapper from './ws-wrapper'
-import type { WebSocketData, WebSocketEvents, WebSocketOptions } from './types'
+import type { Data, Events, Options } from './types'
 
-export type { WebSocketData, WebSocketEvents, WebSocketOptions }
-
-export default class Socketto {
+class Socketto {
   private socket: WsWrapper
 
-  constructor(url: string, websocketEvents: WebSocketEvents = {}, options: Partial<WebSocketOptions> = {}) {
+  constructor(url: string, websocketEvents: Events = {}, options: Partial<Options> = {}) {
     this.socket = new WsWrapper(url, websocketEvents, options)
   }
 
-  createConnection() {
+  createConnection(): void {
     this.socket.createConnection()
   }
 
-  closeConnection() {
+  closeConnection(): void {
     this.socket.closeConnection()
   }
 
-  send(data: WebSocketData) {
+  send(data: Data): void {
     this.socket.send(data)
   }
 
-  get readyState() {
+  get readyState(): number | undefined {
     return this.socket.readyState
   }
 }
+
+// Types are exposed on the default export (e.g. `Socketto.WebSocketEvents`) so the
+// CommonJS build can stay `module.exports = Socketto` with matching typings.
+declare namespace Socketto {
+  export type WebSocketData = Data
+  export type WebSocketEvents = Events
+  export type WebSocketOptions = Options
+}
+
+export default Socketto
