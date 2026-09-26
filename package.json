@@ -55,7 +55,7 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "prepublishOnly": "pnpm build",
-    "release": "npm publish && changeset git-tag",
+    "release": "node scripts/release.mjs",
     "changeset": "changeset"
   },
   "devDependencies": {
